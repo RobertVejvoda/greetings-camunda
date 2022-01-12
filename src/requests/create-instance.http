@@ -1,0 +1,72 @@
+﻿### 
+
+@greetingId = "1f3d0c2c-d1d3-4a4e-b13b-21e66bc7b44c"
+
+@instanceKey = {{createinstance.response.body.$.processInstanceKey}}
+
+
+### Send a message to start instance
+
+POST http://localhost:6643/v1.0/bindings/zeebe-command/
+Content-Type: application/json
+
+{
+  "operation": "publish-message",
+  "data": {
+    "messageName": "greeting-requested",
+    "correlationKey": {{greetingId}},
+    "variables": {
+      "greetingId": {{greetingId}},
+      "name": "Bobba Fet",
+      "email": "bobba-fet@starwars.movie"
+    }
+  }
+}
+
+### Create a process instance by process ID (latest)
+
+
+# @name createinstance 
+POST http://localhost:6643/v1.0/invoke/greetings-camunda/method/command/create-instance
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "greetings-process",
+  "variables": {
+    "greetingId": {{greetingId}},
+    "name": "Bobba Fet",
+    "email": "bobba-fet@starwars.movie"
+  }
+}
+
+###
+
+POST http://localhost:6643/v1.0/invoke/greetings-camunda/method/command/create-instance
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "greetings-process",
+  "variables": {
+    "greetingId": {{greetingId}},
+    "name": "Bobba Fet",
+    "email": "bobba-fet@starwars.movie"
+  }
+}
+
+
+
+
+### Create a process instance by process ID (version 1)
+
+POST http://localhost:6643/v1.0/invoke/greetings-camunda/method/command/create-instance
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "greetings-process",
+  "version": 19,
+  "variables": {
+    "greetingId": {{greetingId}},
+    "name": "Obi-Wan Kenobi",
+    "email": "obi-wan-kenobi@starwars.movie"
+  }
+}

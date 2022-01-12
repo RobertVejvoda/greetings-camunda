@@ -1,0 +1,1 @@
+﻿GET http://localhost:6643/v1.0/invoke/greetings-camunda/method/command/topology

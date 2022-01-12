@@ -1,0 +1,24 @@
+### On greeting requested
+
+POST http://localhost:6643/v1.0/invoke/greetings-camunda/method/command/publish-message
+Content-Type: application/json
+
+{
+  "messageName": "greeting-requested",
+  "timeToLive": "1m",
+  "variables": {
+    "greetingId": "1987b8b0-dcdc-471e-8810-2675c7791f3e",
+    "name": "Obi-Wan Kenobi"
+  }
+}
+
+### On greeting responded
+
+POST http://localhost:6643/v1.0/invoke/greetings-camunda/method/command/publish-message
+Content-Type: application/json
+
+{
+  "messageName": "greeting-responded",
+  "correlationKey": "1987b8b0-dcdc-471e-8810-2675c7791f3e",
+  "timeToLive": "1m"
+}

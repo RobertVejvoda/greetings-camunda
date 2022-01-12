@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "greetings": "StartDebugging",
+        "greetings-dapr": "StartWithoutDebugging",
+        "dapr-placement": "StartWithoutDebugging",
+        "maildev": "StartWithoutDebugging"
+      }
+    }
+  }
+}

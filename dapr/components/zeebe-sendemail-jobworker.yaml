@@ -1,0 +1,23 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: send-email
+  namespace: default
+spec:
+  type: bindings.zeebe.jobworker
+  version: v1
+  metadata:
+  - name: gatewayAddr
+    value: host.docker.internal:26500
+  - name: gatewayKeepAlive
+    value: 45s
+  - name: usePlainTextConnection
+    value: true
+  - name: jobType
+    value: send-email
+  - name: workerName
+    value: emailer-worker
+  - name: workerTimeout
+    value: 30s  # defaults to 5m
+  - name: requestTimeout
+    value: 10s  # defaults to 30s
