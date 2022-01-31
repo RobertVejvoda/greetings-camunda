@@ -3,20 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "src", "src\greetings-camunda.csproj", "{C5C88BBC-EE99-4282-99A3-2E6F2B105FD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "greetings-camunda", "src\api\greetings-camunda.csproj", "{C5C88BBC-EE99-4282-99A3-2E6F2B105FD5}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{2C5F880F-11B4-4D71-BA1F-0897125B113A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3D3B194B-9192-4961-B539-631CDA9A9694}"
 	ProjectSection(SolutionItems) = preProject
 		dapr\components\email.yaml = dapr\components\email.yaml
+		dapr\configuration\mosquitto.conf = dapr\configuration\mosquitto.conf
+		dapr\components\mqtt.yaml = dapr\components\mqtt.yaml
 		dapr\components\secretstore.json = dapr\components\secretstore.json
 		dapr\components\secretstore.yaml = dapr\components\secretstore.yaml
 		dapr\components\zeebe-command.yaml = dapr\components\zeebe-command.yaml
-		dapr\components\zeebe-greet-jobworker.yaml = dapr\components\zeebe-greet-jobworker.yaml
-		dapr\components\zeebe-sendemail-jobworker.yaml = dapr\components\zeebe-sendemail-jobworker.yaml
-		dapr\components\zeebe-sendemailadmin-jobworker.yaml = dapr\components\zeebe-sendemailadmin-jobworker.yaml
+		dapr\components\zeebe-greet.yaml = dapr\components\zeebe-greet.yaml
+		dapr\components\zeebe-sendemail.yaml = dapr\components\zeebe-sendemail.yaml
+		dapr\components\zeebe-sendemailadmin.yaml = dapr\components\zeebe-sendemailadmin.yaml
+		dapr\configuration\zipkin.yaml = dapr\configuration\zipkin.yaml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{08F91B44-668C-4A94-AC24-5649787F89F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sim", "src\sim\sim.csproj", "{74BA397D-8336-4793-8E11-C090FE124793}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +39,17 @@ Global
 		{2C5F880F-11B4-4D71-BA1F-0897125B113A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C5F880F-11B4-4D71-BA1F-0897125B113A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C5F880F-11B4-4D71-BA1F-0897125B113A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74BA397D-8336-4793-8E11-C090FE124793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74BA397D-8336-4793-8E11-C090FE124793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74BA397D-8336-4793-8E11-C090FE124793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74BA397D-8336-4793-8E11-C090FE124793}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C5C88BBC-EE99-4282-99A3-2E6F2B105FD5} = {08F91B44-668C-4A94-AC24-5649787F89F1}
+		{74BA397D-8336-4793-8E11-C090FE124793} = {08F91B44-668C-4A94-AC24-5649787F89F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE0351D5-835F-4333-A61B-E9CFF6F731E6}

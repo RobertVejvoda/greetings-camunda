@@ -2,7 +2,6 @@ apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
   name: send-email
-  namespace: default
 spec:
   type: bindings.zeebe.jobworker
   version: v1

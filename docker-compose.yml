@@ -6,7 +6,7 @@ services:
     image: alderaan/greetings-camunda:${TAG:-latest}
     build:
       context: .
-      dockerfile: src/Dockerfile
+      dockerfile: src/api/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -18,15 +18,15 @@ services:
       - dapr-placement
 
   greetings-dapr:
-    image: daprio/daprd:1.5.1
     container_name: greetings-dapr
+    image: daprio/daprd:latest
     network_mode: "service:greetings"
     command: ["./daprd",
       "-app-id", "greetings-camunda",
       "-app-port", "80",
       "-dapr-http-port", "3500",
       "-dapr-grpc-port", "50001",
-      "-placement-host-address", "dapr-placement:50006",
+      "-placement-host-address", "dapr-placement:50006", 
       "-components-path", "/components"
       ]
     depends_on:
@@ -37,15 +37,12 @@ services:
       - "./dapr/configuration/:/configuration"
 
   dapr-placement:
-    image: "daprio/placement:1.5.1"
     container_name: dapr-placement
+    image: daprio/placement:latest
     command: ["./placement", "-port", "50006"]
     ports:
       - "50006:50006"
 
-  maildev:
-    container_name: "maildev"
-    image: "maildev/maildev:latest"
-    ports:
-      - "4000:80"
-      - "4025:25"
+networks:
+  default:
+    name: camunda-cloud

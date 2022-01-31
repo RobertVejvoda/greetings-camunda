@@ -2,66 +2,115 @@ version: "3.7"
 
 services:
   zeebe:
-    image: camunda/zeebe:${CAMUNDA_CLOUD_VERSION:-1.2.6}
+    image: camunda/zeebe:latest
     container_name: zeebe
     environment:
-        - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
-        - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
-        - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1
     ports:
-        - "26500:26500"
+      - "26500:26500"
+      - "9600:9600"
     volumes:
-        - zeebe:/usr/local/zeebe/data
+      - zeebe:/usr/local/zeebe/data
     depends_on:
-        - elasticsearch
+      - elasticsearch
 
   operate:
-    image: camunda/operate:${CAMUNDA_CLOUD_VERSION:-1.2.6}
+    image: camunda/operate:latest
     container_name: operate
     environment:
-        - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
-        - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
-        - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
-        - "8080:8080"
+      - "8080:8080"
     depends_on:
-        - elasticsearch
+      - elasticsearch
 
   tasklist:
-    image: camunda/tasklist:${CAMUNDA_CLOUD_VERSION:-1.2.6}
+    image: camunda/tasklist:latest
     container_name: tasklist
     environment:
-        - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
-        - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
-        - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
-        - "8081:8080"
+      - "8081:8080"
     depends_on:
-        - elasticsearch
+      - elasticsearch
+
+  dmn-worker:
+   image: ghcr.io/camunda-community-hub/zeebe-dmn-worker:latest
+   container_name: dmn-worker
+   environment:
+     - zeebe.client.broker.gatewayAddress=zeebe:26500
+     - zeebe.client.worker.dmn.repository=/usr/share/zeebe/dmn-repo
+   volumes:
+     - ./dmn-repo:/usr/share/zeebe/dmn-repo
+   depends_on:
+     - zeebe
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.16.1}
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
     container_name: elasticsearch
     environment:
-        - cluster.name=camunda-cloud
-        - discovery.type=single-node
-        - bootstrap.memory_lock=true
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-        - xpack.security.enabled=false
+      - cluster.name=camunda-cloud
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ports:
+      - 9200:9200
     ulimits:
-        memlock:
-            soft: -1
-            hard: -1
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
-        - elastic:/usr/share/elasticsearch/data
+      - elastic:/usr/share/elasticsearch/data
+
+  maildev:
+    container_name: maildev
+    image: maildev/maildev:latest
+    ports:
+      - "4000:80"
+      - "4025:25"
+
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: "rabbitmq:3-management-alpine"
+    ports: 
+      - "5672:5672"
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:latest
+    volumes:
+      - "../dapr/configuration/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
 
 volumes:
-    zeebe:
-        driver: local
-    elastic:
-        driver: local
+  zeebe:
+    driver: local
+  elastic:
+    driver: local
 
 networks:
   default:
     name: camunda-cloud
-    external: true

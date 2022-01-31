@@ -1,8 +1,7 @@
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: greet
-  namespace: default
+  name: decide-greeting
 spec:
   type: bindings.zeebe.jobworker
   version: v1
@@ -14,7 +13,7 @@ spec:
   - name: usePlainTextConnection
     value: true
   - name: jobType
-    value: greet
+    value: decide-greeting
   - name: workerName
     value: greeter-worker
   - name: workerTimeout

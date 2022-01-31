@@ -1,5 +1,7 @@
 # Camunda, Zeebe and Dapr
 
+## Warning - work is still in progress!
+
 Goal of this example is to try features available by Camunda workflow and Zeebe automation processing framework with Dapr to make coding as much as independent as possible. Workflow engine brings a great separation and automation of lifecycle. This is especially important for microservices and Camunda seems a feasible engine for cross platform solutions. Next step would be to add integration events, which will make processes even more separated.
 
 ## Use case / BPMN process
@@ -12,7 +14,7 @@ Request greeting and watch processing to the end.
 
 Best experience is from Visual Studio by running docker-compose launch adding debugging options, but it's not necessary.
 
-1. Start docker-compose in Infrastructure folder by running `docker-compose up`. I left it separate as it it the background for my other projects.
+1. Start docker-compose in Infrastructure folder by running `docker-compose up`. I left it separate as it it the background for my other projects and also when updating and testing code I don't have to start everything. RabbitMQ is not needed. DMN worker is not tested. [todo]. Inspect images, expecially MQTT.
 2. Start `docker-compose up --build` in greetings-camunda folder. This should build the project and create docker image.
 3. Navigate to [MailDev](http://localhost:4000/) for testing emails
 4. Navigate to [Camunda cloud self hosted](http://localhost:8080/)
@@ -22,6 +24,7 @@ Best experience is from Visual Studio by running docker-compose launch adding de
 
 5. Use Camunda Modeler to see BPMN diagram and deploy to web site - Model/Greetings2.bpmn
 6. Execute REST queries located in requests folder, best from VS Code. Start by create-instance.http and experiment.
+7. Alternatively start simulator in sim folder as `dotnet run` to process all messages or `dotnet run 10` to process just 10 messages.
 
 ### Thanks
 
