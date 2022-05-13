@@ -14,8 +14,6 @@ services:
       - "6543:80"     # app
       - "6643:3500"   # dapr http
       - "65430:50001" # dapr grpc
-    depends_on:
-      - dapr-placement
 
   greetings-dapr:
     container_name: greetings-dapr
@@ -26,23 +24,32 @@ services:
       "-app-port", "80",
       "-dapr-http-port", "3500",
       "-dapr-grpc-port", "50001",
-      "-placement-host-address", "dapr-placement:50006", 
+      "-placement-host-address", "greetings-dapr-placement:50006", 
       "-components-path", "/components"
       ]
     depends_on:
       - greetings
-      - dapr-placement
+      - greetings-dapr-placement
     volumes:
       - "./dapr/components/:/components"
       - "./dapr/configuration/:/configuration"
 
-  dapr-placement:
-    container_name: dapr-placement
+  greetings-dapr-placement:
+    container_name: greetings-dapr-placement
     image: daprio/placement:latest
     command: ["./placement", "-port", "50006"]
     ports:
       - "50006:50006"
 
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:latest
+    volumes:
+      - "./dapr/configuration/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+
 networks:
   default:
-    name: camunda-cloud
+    name: greetings-network

@@ -21,11 +21,7 @@ namespace greetings_camunda
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddDapr(client => client.UseJsonSerializationOptions(
-                new System.Text.Json.JsonSerializerOptions() 
-                {
-                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
-                }));
+            services.AddControllers().AddDapr();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "greetings-camunda", Version = "v1" });

@@ -59,7 +59,7 @@ namespace greetings_camunda.Controllers
 		/// <summary>
 		/// Decide greeting and set variables to Camunda as global.
 		/// </summary>
-        [HttpPost("/decide-greeting")]
+		[HttpPost("/decide-greeting")]
         public async Task<ActionResult> DecideHowToGreet([FromServices] DaprClient daprClient)
         {
 			logger.LogZeebeHeaders(Request);

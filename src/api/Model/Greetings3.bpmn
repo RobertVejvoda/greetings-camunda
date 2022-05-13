@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1tfd683" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1tfd683" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
   <bpmn:process id="greetings-process-new" name="greetings-new" isExecutable="true">
-    <bpmn:startEvent id="GreetingRequestedEvent" name="I&#39;m sad, greet me someone!">
-      <bpmn:extensionElements />
-      <bpmn:outgoing>Flow_1bnf6wc</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0cbi6sb" messageRef="Message_187t85j" />
-    </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1bnf6wc" sourceRef="GreetingRequestedEvent" targetRef="Activity_0gr6aka" />
     <bpmn:sequenceFlow id="Flow_1tav6ml" sourceRef="GreetActivity" targetRef="Gateway_0iuzbv8" />
     <bpmn:endEvent id="GreetingFinishedEvent" name="Greeting finished">
       <bpmn:extensionElements />
@@ -44,7 +38,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0mipkja" sourceRef="Gateway_0iuzbv8" targetRef="GreetingFinishedEvent" />
     <bpmn:sequenceFlow id="Flow_1fl1hmj" name="Valid email?" sourceRef="Gateway_0iuzbv8" targetRef="SendEmailActivity">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= matches(email, "^[^@\s]+@[^@\s]+\.[^@\s]+$")</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=matches(Email, "^(.+)@(S+)$")</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:boundaryEvent id="Event_1nxp0fw" name="Error" attachedToRef="GreetActivity">
       <bpmn:outgoing>Flow_1cgmupx</bpmn:outgoing>
@@ -64,26 +58,40 @@
     </bpmn:serviceTask>
     <bpmn:businessRuleTask id="Activity_0gr6aka" name="Decide how to greet">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="dmn-worker" retries="1" />
         <zeebe:taskHeaders>
           <zeebe:header key="decisionRef" value="name" />
         </zeebe:taskHeaders>
         <zeebe:ioMapping>
-          <zeebe:output source="=greeging" target="greeting" />
+          <zeebe:output source="=greeting" target="greeting" />
         </zeebe:ioMapping>
+        <zeebe:taskDefinition type="decide-greeting" retries="1" />
       </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1440ge8</bpmn:incoming>
     </bpmn:businessRuleTask>
     <bpmn:sequenceFlow id="Flow_1rsyuyq" sourceRef="Activity_0gr6aka" targetRef="GreetActivity" />
+    <bpmn:startEvent id="Event_1m1k3t4" name="I&#39;m sad, greet me someone">
+      <bpmn:outgoing>Flow_1440ge8</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1s420fy" messageRef="Message_187t85j" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1440ge8" sourceRef="Event_1m1k3t4" targetRef="Activity_0gr6aka" />
   </bpmn:process>
-  <bpmn:message id="Message_187t85j" name="greeting-requested" />
+  <bpmn:message id="Message_187t85j" name="greeting-requested">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=greetingId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:message id="Message_0bli1dq" name="greeting-responded">
     <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="= greetingId" />
+      <zeebe:subscription correlationKey="=greetingId" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:error id="Error_02gtkst" name="greeting-error" errorCode="GreetingError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="greetings-process-new">
+      <bpmndi:BPMNEdge id="Flow_1440ge8_di" bpmnElement="Flow_1440ge8">
+        <di:waypoint x="228" y="270" />
+        <di:waypoint x="340" y="270" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1rsyuyq_di" bpmnElement="Flow_1rsyuyq">
         <di:waypoint x="440" y="270" />
         <di:waypoint x="550" y="270" />
@@ -121,16 +129,6 @@
         <di:waypoint x="650" y="270" />
         <di:waypoint x="859" y="270" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1bnf6wc_di" bpmnElement="Flow_1bnf6wc">
-        <di:waypoint x="218" y="270" />
-        <di:waypoint x="340" y="270" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1nt6brd_di" bpmnElement="GreetingRequestedEvent">
-        <dc:Bounds x="182" y="252" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="157" y="215" width="85" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0chb245_di" bpmnElement="GreetingFinishedEvent">
         <dc:Bounds x="1112" y="252" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -166,6 +164,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1p2vgzp_di" bpmnElement="Activity_0gr6aka">
         <dc:Bounds x="340" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0e9u0h0_di" bpmnElement="Event_1m1k3t4">
+        <dc:Bounds x="192" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="295" width="68" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_043z0fd_di" bpmnElement="Event_1nxp0fw">
         <dc:Bounds x="632" y="212" width="36" height="36" />
