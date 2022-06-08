@@ -49,7 +49,7 @@ namespace sim
 													Email = greetingName.Email,
 													Name = greetingName.FullName
 												}, cancellationToken);
-					await Task.Delay(100, cancellationToken);
+					await Task.Delay(1000, cancellationToken);
 
 					counter++;
 				}

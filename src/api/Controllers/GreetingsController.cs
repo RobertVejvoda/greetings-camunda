@@ -62,7 +62,7 @@ namespace greetings_camunda.Controllers
 		[HttpPost("/decide-greeting")]
         public async Task<ActionResult> DecideHowToGreet([FromServices] DaprClient daprClient)
         {
-			logger.LogZeebeHeaders(Request);
+			// logger.LogZeebeHeaders(Request);
 
 			// randomly choose time of day
 			var timeSpan = TimeSpan.FromSeconds(Random.Shared.Next(0, 24*60*60));
@@ -80,10 +80,10 @@ namespace greetings_camunda.Controllers
         /// <summary>
         /// Greet from Zeebe Broker output binding
         /// </summary>
-        [HttpPost("/greet")]  // must start with /
+        [HttpPost("/greet")]
 		public async Task<ActionResult> Greet([FromBody] GreetingRequest greeting, [FromServices] DaprClient daprClient)
 		{
-			logger.LogZeebeHeaders(Request);
+			//logger.LogZeebeHeaders(Request);
 			logger.LogInformation(greeting.Greeting);
 
 			// simulate process error, pseudo-randomly throw errors
@@ -93,7 +93,12 @@ namespace greetings_camunda.Controllers
                 logger.LogWarning(message);
 				
 				var jobKey = long.Parse(Request.Headers["X-Zeebe-Job-Key"]);
-				var throwError = new ThrowErrorRequest(jobKey, "GreetingError", message);
+				var throwError = new ThrowErrorRequest(jobKey, "Greeting Error", message);
+				
+				Response.Headers.Add("X-Custom-ErrorCode", "Greeting Error");
+				Response.Headers.Add("X-Custom-ErrorMessage", message);
+
+				// dictionary convert hack
 				await daprClient.InvokeBindingAsync<ThrowErrorRequest, ThrowErrorResponse>("zeebe-command", Commands.ThrowError, throwError);
 			}
 			else
@@ -134,13 +139,18 @@ namespace greetings_camunda.Controllers
 		[HttpPost("/send-email-admin")]
 		public async Task<ActionResult> SendEmailAdmin([FromServices] DaprClient daprClient)
 		{
-			var jobKey = long.Parse(Request.Headers["X-Zeebe-Job-Key"]);
-			var body = Request.Headers["X-Zeebe-ErrorMessage"];
+			logger.LogZeebeHeaders(Request);
+
+			// var jobKey = long.Parse(Request.Headers["X-Zeebe-Job-Key"]);
+			var jobKey = Request.Headers["X-Zeebe-Job-Key"];
+			var errorCode = Request.Headers["X-Custom-ErrorCode"];
+			var errorMessage = Request.Headers["X-Custom-ErrorMessage"];
+			var body = $"Job {jobKey} failed. {errorMessage}";
 			var metadata = new Dictionary<string, string>
 			{
 				["emailFrom"] = "noreply@incredible.inc",
 				["emailTo"] = "admin@incredible.inc",
-				["subject"] = $"Job {jobKey} failed."
+				["subject"] = errorCode
 			};
 
 			await daprClient.InvokeBindingAsync("sendmail", "create", body, metadata);
