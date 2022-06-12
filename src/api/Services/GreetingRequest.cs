@@ -14,10 +14,13 @@ namespace greetings_camunda.Services
         [Required]
         public string Email { get; set; }
 
+        public double Score {get; set; }
+
+        public double ScorePercent => Math.Round(Score*100,2);
+
         public string Greeting { get; set; }
-        public string GreetingMessage { get; set; }
 
         public override string ToString()
-            => $"{GreetingId}, {Name}, {Email}";
+            => $"ID: {GreetingId}\r\nName: {Name}\r\nEmail: {Email}\r\nScore: {ScorePercent}";
     }
 }

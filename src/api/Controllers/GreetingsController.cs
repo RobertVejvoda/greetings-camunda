@@ -7,6 +7,7 @@ using greetings_camunda.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,15 +19,16 @@ namespace greetings_camunda.Controllers
 	[Route("[controller]")]
 	public class GreetingsController : ControllerBase
 	{
-		private readonly ILogger<GreetingsController> logger;
-		private readonly IGreetingService greetingService;
+        private readonly ILogger<GreetingsController> logger;
+		private readonly JsonSerializerSettings jsonSerializerSettings;
 
-		public GreetingsController(
-						IGreetingService greetingService,
-						ILogger<GreetingsController> logger)
+        public GreetingsController(ILogger<GreetingsController> logger)
 		{
-			this.greetingService = greetingService;
-			this.logger = logger;
+            this.logger = logger;
+			this.jsonSerializerSettings = new JsonSerializerSettings 
+			{
+				ContractResolver = new CamelCasePropertyNamesContractResolver()
+			};
 		}
 
 		[HttpGet("/")]
@@ -36,7 +38,7 @@ namespace greetings_camunda.Controllers
 		}
 
 		/// <summary>
-		/// Receing a message to MQTT pubsub and topic named "camunda/greeting-requested" 
+		/// Receiving a message to MQTT pubsub and topic named "camunda/greeting-requested" 
 		/// and it should start a new Camunda Greet process by invoking zeebe-command binding.
 		/// </summary>
 		[Topic("mqtt", "camunda/greeting-requested")]
@@ -46,7 +48,7 @@ namespace greetings_camunda.Controllers
 			logger.LogInformation(request.ToString());
 
 			// serialize and deserialize request to get it into dictionary format.
-			var json = JsonConvert.SerializeObject(request);
+			var json = JsonConvert.SerializeObject(request, Formatting.Indented, jsonSerializerSettings);
 
 			// start Camunda process by invoking a message to Camunda
 			await daprClient.InvokeBindingAsync<PublishMessageRequest, PublishMessageResponse>("zeebe-command", Commands.PublishMessage,
@@ -57,53 +59,40 @@ namespace greetings_camunda.Controllers
 		}
 
 		/// <summary>
-		/// Decide greeting and set variables to Camunda as global.
-		/// </summary>
-		[HttpPost("/decide-greeting")]
-        public async Task<ActionResult> DecideHowToGreet([FromServices] DaprClient daprClient)
-        {
-			logger.LogZeebeHeaders(Request);
-
-			// randomly choose time of day
-			var timeSpan = TimeSpan.FromSeconds(Random.Shared.Next(0, 24*60*60));
-			var greeting = greetingService.DecideGreeting(TimeOnly.FromTimeSpan(timeSpan));
-            logger.LogInformation(greeting);
-
-			// get the element instance key where to set the variables back to Camunda
+        /// Score from Zeebe Broker output binding
+        /// </summary>
+		[HttpPost("/score")]
+		public async Task<ActionResult> Score([FromBody, Required] GreetingRequest request,
+			[FromServices] DaprClient daprClient, [FromServices] IScoringService scoringService)
+		{
+			request.Score = await scoringService.Score(request.Email);
+			
 			var elementInstanceKey = long.Parse(Request.Headers["X-Zeebe-Element-Instance-Key"]);
 			await daprClient.InvokeBindingAsync<SetVariablesRequest, SetVariablesResponse>("zeebe-command", Commands.SetVariables,
-				new SetVariablesRequest(elementInstanceKey, new { Greeting = greeting }, false));
+				new SetVariablesRequest(elementInstanceKey, request, false));
 
 			return Ok();
-        }
+		}
 
         /// <summary>
         /// Greet from Zeebe Broker output binding
         /// </summary>
-        [HttpPost("/greet")]  // must start with /
+        [HttpPost("/greet")]
 		public async Task<ActionResult> Greet([FromBody] GreetingRequest greeting, [FromServices] DaprClient daprClient)
 		{
-			logger.LogZeebeHeaders(Request);
-			logger.LogInformation(greeting.Greeting);
-
-			// simulate process error, pseudo-randomly throw errors
-			if (Random.Shared.NextDouble() > 0.8)
+			if (greeting.Score < 0.3)
 			{
-                string message = $"No greeting for {greeting.Name}!";
-                logger.LogWarning(message);
+				var message = $"{greeting.Name} doesn't deserve greeting due to low score.";
+				
+				logger.LogWarning(message);
 				
 				var jobKey = long.Parse(Request.Headers["X-Zeebe-Job-Key"]);
-				var throwError = new ThrowErrorRequest(jobKey, "GreetingError", message);
-				await daprClient.InvokeBindingAsync<ThrowErrorRequest, ThrowErrorResponse>("zeebe-command", Commands.ThrowError, throwError);
-			}
-			else
-            {
-				var message = greetingService.Greet(greeting.Greeting, greeting.Name);
-
-				// get the element instance key where to set the variables back to Camunda
-				var elementInstanceKey = long.Parse(Request.Headers["X-Zeebe-Element-Instance-Key"]);
+				var throwErrorRequest = new ThrowErrorRequest(jobKey, "GreetingError", message);
+		 		var elementInstanceKey = long.Parse(Request.Headers["X-Zeebe-Element-Instance-Key"]);
 				await daprClient.InvokeBindingAsync<SetVariablesRequest, SetVariablesResponse>("zeebe-command", Commands.SetVariables,
-					new SetVariablesRequest(elementInstanceKey, new { GreetingMessage = message }, false));
+					new SetVariablesRequest(elementInstanceKey, throwErrorRequest, false));	
+
+				await daprClient.InvokeBindingAsync<ThrowErrorRequest, ThrowErrorResponse>("zeebe-command", Commands.ThrowError, throwErrorRequest);
 			}
 
 			return Ok();
@@ -115,7 +104,7 @@ namespace greetings_camunda.Controllers
 		[HttpPost("/send-email")]
 		public async Task<ActionResult> SendEmail([FromBody, Required] GreetingRequest greeting, [FromServices] DaprClient daprClient)
 		{
-            var body = greeting.GreetingMessage;
+            var body = ComposeGreetingMessage(greeting);
             var metadata = new Dictionary<string, string>
             {
                 ["emailFrom"] = "noreply@incredible.inc",
@@ -128,24 +117,28 @@ namespace greetings_camunda.Controllers
             return Ok();
 		}
 
-		/// <summary>
-		/// Admin Email from Zeebe Broker output binding
-		/// </summary>
-		[HttpPost("/send-email-admin")]
-		public async Task<ActionResult> SendEmailAdmin([FromServices] DaprClient daprClient)
+
+        /// <summary>
+        /// Admin Email from Zeebe Broker output binding
+        /// </summary>
+        [HttpPost("/send-email-admin")]
+		public async Task<ActionResult> SendEmailAdmin([FromBody, Required] ThrowErrorRequest greetingError, [FromServices] DaprClient daprClient)
 		{
 			var jobKey = long.Parse(Request.Headers["X-Zeebe-Job-Key"]);
-			var body = Request.Headers["X-Zeebe-ErrorMessage"];
+			var body = greetingError.ErrorMessage;
 			var metadata = new Dictionary<string, string>
 			{
 				["emailFrom"] = "noreply@incredible.inc",
 				["emailTo"] = "admin@incredible.inc",
-				["subject"] = $"Job {jobKey} failed."
+				["subject"] = $"Greeter job {jobKey} failed."
 			};
 
 			await daprClient.InvokeBindingAsync("sendmail", "create", body, metadata);
 
 			return Ok();
 		}
+
+        private static string ComposeGreetingMessage(GreetingRequest greeting) => $"{greeting.Greeting} {greeting.Name}!";
+
 	}
 }

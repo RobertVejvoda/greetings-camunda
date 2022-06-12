@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="GreetingDecisionGraph" name="Greeting Decision" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <decision id="timeOfTheDayDecision" name="Greeting time">
+    <informationRequirement id="InformationRequirement_0z0xlhm">
+      <requiredInput href="#timeOfTheDay" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0swayg3" hitPolicy="FIRST">
+      <input id="Input_1" label="Time" biodi:width="188">
+        <inputExpression id="InputExpression_1" typeRef="time">
+          <text>time(now().hour, now().minute, now().second)</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Time of the day" name="desiredTimeOfTheDay" typeRef="string" />
+      <rule id="DecisionRule_1hopuhc">
+        <inputEntry id="UnaryTests_0nk0usr">
+          <text>&gt; time("21:59:59")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0en5tek">
+          <text>"night"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_054xb0m">
+        <inputEntry id="UnaryTests_0ie01wg">
+          <text>&gt; time("17:59:59")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1rvep2b">
+          <text>"evening"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0tptyw7">
+        <inputEntry id="UnaryTests_12h8vgi">
+          <text>&gt; time("11:59:59")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0hrnyb8">
+          <text>"afternoon"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1yb3grt">
+        <inputEntry id="UnaryTests_1icibzv">
+          <text>&gt; time("04:59:59")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1giaoii">
+          <text>"morning"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_061bbow">
+        <inputEntry id="UnaryTests_1lrx80f">
+          <text>&gt; time("00:00:00")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1wbcp8i">
+          <text>"night"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="languageDecision" name="Greeting language decision">
+    <informationRequirement id="InformationRequirement_0iizmc3">
+      <requiredInput href="#InputData_1kbclqd" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0kpevb3" hitPolicy="FIRST">
+      <input id="InputClause_1bi3zaa" label="Learning Score" biodi:width="192">
+        <inputExpression id="LiteralExpression_0miop1o" typeRef="number">
+          <text>score</text>
+        </inputExpression>
+      </input>
+      <output id="OutputClause_05fvm3z" label="Language" name="desiredLanguage" typeRef="string" />
+      <rule id="DecisionRule_00nzkwi">
+        <description>greet in french</description>
+        <inputEntry id="UnaryTests_19myw9w">
+          <text>&gt; 0.6</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_12u4met">
+          <text>"french"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1syte52">
+        <description>greet in spanish</description>
+        <inputEntry id="UnaryTests_0t5lbaq">
+          <text>&gt; 0.4</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0keu4sw">
+          <text>"spanish"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0u87jmk">
+        <description>greet in english</description>
+        <inputEntry id="UnaryTests_11dtimq">
+          <text>&gt;= 0</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0j7blbn">
+          <text>"english"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="greetingDecision" name="Decide greeting">
+    <informationRequirement id="InformationRequirement_1h27k42">
+      <requiredDecision href="#languageDecision" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_1embtjz">
+      <requiredDecision href="#timeOfTheDayDecision" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0cinr3r">
+      <input id="InputClause_1xy0bna" label="Time of the day">
+        <inputExpression id="LiteralExpression_0ir89ni" typeRef="string">
+          <text>timeOfTheDayDecision</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1n4b1ib" label="Language">
+        <inputExpression id="LiteralExpression_1kkqo2k" typeRef="string">
+          <text>languageDecision</text>
+        </inputExpression>
+      </input>
+      <output id="OutputClause_0lpfhfz" label="Greeting" name="desiredGreeting" typeRef="string" />
+      <rule id="DecisionRule_0gmp57l">
+        <inputEntry id="UnaryTests_112u0qr">
+          <text>"morning"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1uozc2e">
+          <text>"english"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_163amva">
+          <text>"Good morning"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_03i6ezw">
+        <inputEntry id="UnaryTests_1xp5p1b">
+          <text>"afternoon"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0r0afsr">
+          <text>"english"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0wmkdjv">
+          <text>"Good afternoon"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ctlsa2">
+        <inputEntry id="UnaryTests_1sa2ryu">
+          <text>"evening"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00a7888">
+          <text>"english"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_18qdf8o">
+          <text>"Good evening"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0t2czr9">
+        <inputEntry id="UnaryTests_10jgwk4">
+          <text>"night"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1u0y8cd">
+          <text>"english"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0e532z7">
+          <text>"Good night"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_025mxt6">
+        <inputEntry id="UnaryTests_12ix07b">
+          <text>"morning"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0blz364">
+          <text>"french"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0tdunj7">
+          <text>"Bonjour"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1xvwtfm">
+        <inputEntry id="UnaryTests_00kcs6n">
+          <text>"afternoon"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0l3a6xh">
+          <text>"french"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0vt77hg">
+          <text>"Bonne après-midi"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_04zzfwp">
+        <inputEntry id="UnaryTests_12bxosb">
+          <text>"evening"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ulgc1x">
+          <text>"french"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0hwuy5n">
+          <text>"Bonsoir"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0l6d7ot">
+        <inputEntry id="UnaryTests_1d6xdbq">
+          <text>"night"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0s6pomv">
+          <text>"french"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08lxmsv">
+          <text>"Bonne nuit"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0q0q6bc">
+        <inputEntry id="UnaryTests_062vyff">
+          <text>"morning"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1x0g32v">
+          <text>"spanish"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_14ghmxu">
+          <text>"Buenos dias"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0tm7ej3">
+        <inputEntry id="UnaryTests_13y7849">
+          <text>"afternoon"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ji46py">
+          <text>"spanish"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ctaggq">
+          <text>"Buenas tardes"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0991pwt">
+        <inputEntry id="UnaryTests_1rwaca2">
+          <text>"evening"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1m1g704">
+          <text>"spanish"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1jrp9ig">
+          <text>"Buenas noches"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0sh68ft">
+        <inputEntry id="UnaryTests_0rgagfq">
+          <text>"night"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vqgk08">
+          <text>"spanish"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1a52eym">
+          <text>"Buenas noches"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="timeOfTheDay" name="Time of the day" />
+  <inputData id="InputData_1kbclqd" name="Score" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="timeOfTheDayDecision">
+        <dc:Bounds height="80" width="180" x="430" y="280" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0p9xvkj" dmnElementRef="languageDecision">
+        <dc:Bounds height="80" width="180" x="160" y="280" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0fu2nfu" dmnElementRef="greetingDecision">
+        <dc:Bounds height="80" width="180" x="290" y="70" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0auvm2h" dmnElementRef="InformationRequirement_1h27k42">
+        <di:waypoint x="250" y="280" />
+        <di:waypoint x="350" y="170" />
+        <di:waypoint x="350" y="150" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="DMNEdge_0lkjhsa" dmnElementRef="InformationRequirement_1embtjz">
+        <di:waypoint x="520" y="280" />
+        <di:waypoint x="410" y="170" />
+        <di:waypoint x="410" y="150" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_1p6m2zf" dmnElementRef="timeOfTheDay">
+        <dc:Bounds height="45" width="125" x="457" y="428" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0zcoz6e" dmnElementRef="InformationRequirement_0z0xlhm">
+        <di:waypoint x="520" y="428" />
+        <di:waypoint x="520" y="380" />
+        <di:waypoint x="520" y="360" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_0oo26ge" dmnElementRef="InputData_1kbclqd">
+        <dc:Bounds height="45" width="125" x="187" y="428" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_04ou3c6" dmnElementRef="InformationRequirement_0iizmc3">
+        <di:waypoint x="250" y="428" />
+        <di:waypoint x="250" y="380" />
+        <di:waypoint x="250" y="360" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

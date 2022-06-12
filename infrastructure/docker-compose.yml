@@ -25,6 +25,9 @@ services:
       - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "8080:8080"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       - elasticsearch
 
@@ -37,19 +40,11 @@ services:
       - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "8081:8080"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       - elasticsearch
-
-  dmn-worker:
-   image: ghcr.io/camunda-community-hub/zeebe-dmn-worker:latest
-   container_name: dmn-worker
-   environment:
-     - zeebe.client.broker.gatewayAddress=zeebe:26500
-     - zeebe.client.worker.dmn.repository=/usr/share/zeebe/dmn-repo
-   volumes:
-     - ./dmn-repo:/usr/share/zeebe/dmn-repo
-   depends_on:
-     - zeebe
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
@@ -73,22 +68,22 @@ services:
     container_name: maildev
     image: maildev/maildev:latest
     ports:
-      - "4000:80"
-      - "4025:25"
+      - "4000:1080"
+      - "4025:1025"
 
-  zipkin:
-    container_name: zipkin
-    image: openzipkin/zipkin
-    ports:
-      - "9411:9411"
+  # zipkin:
+  #   container_name: zipkin
+  #   image: openzipkin/zipkin
+  #   ports:
+  #     - "9411:9411"
 
-  redis:
-    container_name: redis
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+  # redis:
+  #   container_name: redis
+  #   image: redis:latest
+  #   ports:
+  #     - "6379:6379"
+  #   environment:
+  #     - ALLOW_EMPTY_PASSWORD=yes
 
   rabbitmq:
     container_name: rabbitmq

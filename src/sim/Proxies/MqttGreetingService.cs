@@ -3,6 +3,7 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,11 +16,17 @@ namespace sim.Proxies
 		private readonly IMqttClient mqttClient;
 		private readonly IMqttClientOptions mqttClientOptions;
 		private readonly ILogger logger;
+		private readonly JsonSerializerSettings jsonSerializerSettings;
+
 
 		public MqttGreetingService(ILogger<MqttGreetingService> logger)
 		{
 			// connect mqtt broker
 			this.logger = logger;
+			this.jsonSerializerSettings = new JsonSerializerSettings 
+			{
+				ContractResolver = new CamelCasePropertyNamesContractResolver()
+			};
 			var mqttHost = Environment.GetEnvironmentVariable("MQTT_HOST") ?? "localhost";
 			var mqttPort = Environment.GetEnvironmentVariable("MQTT_PORT") ?? "1883";
 
@@ -36,7 +43,7 @@ namespace sim.Proxies
 
 		public async Task GreetAsync(GreetingRequest request, CancellationToken cancellationToken = default)
 		{
-			var eventJson = JsonConvert.SerializeObject(request);
+			var eventJson = JsonConvert.SerializeObject(request, Formatting.None, jsonSerializerSettings); 
 
 			var message = new MqttApplicationMessageBuilder()
 				.WithTopic("camunda/greeting-requested")

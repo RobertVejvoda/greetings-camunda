@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_03f5rfk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <bpmn:process id="Process_12l7a3s" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>Flow_03fedxo</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0bprhp5">
+      <bpmn:incoming>Flow_0fzofdf</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_151pxjn" sourceRef="Activity_1tmcu9k" targetRef="Gateway_1yaimwm" />
+    <bpmn:sequenceFlow id="Flow_03fedxo" sourceRef="StartEvent_1" targetRef="Activity_1tmcu9k" />
+    <bpmn:businessRuleTask id="Activity_1tmcu9k" name="Decision Test">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="timeOfTheDayDecision" resultVariable="desiredTimeOfTheDay" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03fedxo</bpmn:incoming>
+      <bpmn:outgoing>Flow_151pxjn</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="Gateway_1yaimwm" default="Flow_0fzofdf">
+      <bpmn:incoming>Flow_151pxjn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fzofdf</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1mej806</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0fzofdf" sourceRef="Gateway_1yaimwm" targetRef="Event_0bprhp5" />
+    <bpmn:endEvent id="Event_01mwi7d">
+      <bpmn:incoming>Flow_1mej806</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1mej806" sourceRef="Gateway_1yaimwm" targetRef="Event_01mwi7d">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=matches(email, "^[A-z0-9\.\-]+@[A-z0-9\.\-]+\.[A-z0-9]{2,5}$")</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_12l7a3s">
+      <bpmndi:BPMNEdge id="Flow_03fedxo_di" bpmnElement="Flow_03fedxo">
+        <di:waypoint x="198" y="120" />
+        <di:waypoint x="340" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_151pxjn_di" bpmnElement="Flow_151pxjn">
+        <di:waypoint x="440" y="120" />
+        <di:waypoint x="555" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fzofdf_di" bpmnElement="Flow_0fzofdf">
+        <di:waypoint x="605" y="120" />
+        <di:waypoint x="722" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mej806_di" bpmnElement="Flow_1mej806">
+        <di:waypoint x="580" y="145" />
+        <di:waypoint x="580" y="232" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="162" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19q65xz_di" bpmnElement="Activity_1tmcu9k">
+        <dc:Bounds x="340" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0bprhp5_di" bpmnElement="Event_0bprhp5">
+        <dc:Bounds x="722" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1yaimwm_di" bpmnElement="Gateway_1yaimwm" isMarkerVisible="true">
+        <dc:Bounds x="555" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_01mwi7d_di" bpmnElement="Event_01mwi7d">
+        <dc:Bounds x="562" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

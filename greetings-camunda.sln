@@ -8,18 +8,6 @@ EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{2C5F880F-11B4-4D71-BA1F-0897125B113A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3D3B194B-9192-4961-B539-631CDA9A9694}"
-	ProjectSection(SolutionItems) = preProject
-		dapr\components\email.yaml = dapr\components\email.yaml
-		dapr\configuration\mosquitto.conf = dapr\configuration\mosquitto.conf
-		dapr\components\mqtt.yaml = dapr\components\mqtt.yaml
-		dapr\components\secretstore.json = dapr\components\secretstore.json
-		dapr\components\secretstore.yaml = dapr\components\secretstore.yaml
-		dapr\components\zeebe-command.yaml = dapr\components\zeebe-command.yaml
-		dapr\components\zeebe-greet.yaml = dapr\components\zeebe-greet.yaml
-		dapr\components\zeebe-sendemail.yaml = dapr\components\zeebe-sendemail.yaml
-		dapr\components\zeebe-sendemailadmin.yaml = dapr\components\zeebe-sendemailadmin.yaml
-		dapr\configuration\zipkin.yaml = dapr\configuration\zipkin.yaml
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{08F91B44-668C-4A94-AC24-5649787F89F1}"
 EndProject

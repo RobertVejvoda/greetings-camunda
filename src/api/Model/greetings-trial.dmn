@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="GreetingDecisionGraph" name="Greeting Decision" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <decision id="timeOfTheDayDecision" name="Greeting time">
+    <decisionTable id="DecisionTable_0swayg3" hitPolicy="FIRST">
+      <input id="Input_1" label="Time" biodi:width="188">
+        <inputExpression id="InputExpression_1" typeRef="time">
+          <text>time(now().hour, now().minute, now().second)</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Time of the day" name="desiredTimeOfTheDay" typeRef="string" />
+      <rule id="DecisionRule_0tfx0e0">
+        <description>night</description>
+        <inputEntry id="UnaryTests_177kopr">
+          <text>&gt; time("21:59:59")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ab0ocq">
+          <text>"night"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1p1t0st">
+        <description>evening</description>
+        <inputEntry id="UnaryTests_143bile">
+          <text>&gt; time("17:59:59")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_05urhdv">
+          <text>"evening"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_04tbts8">
+        <description>afternoon</description>
+        <inputEntry id="UnaryTests_11weyma">
+          <text>&gt; time("11:59:59")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1pof9lg">
+          <text>"afternoon"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1u4lkyi">
+        <description>morning</description>
+        <inputEntry id="UnaryTests_028vglw">
+          <text>&gt; time("04:00:00")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0i5h1rh">
+          <text>"morning"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_10ewju4">
+        <description>night</description>
+        <inputEntry id="UnaryTests_1s8a03l">
+          <text>&gt; time("00:00:00")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0or4c92">
+          <text>"night"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="timeOfTheDayDecision">
+        <dc:Bounds height="80" width="180" x="540" y="320" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

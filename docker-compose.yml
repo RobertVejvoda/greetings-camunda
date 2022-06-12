@@ -41,15 +41,6 @@ services:
     ports:
       - "50006:50006"
 
-  mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto:latest
-    volumes:
-      - "./dapr/configuration/mosquitto.conf:/mosquitto/config/mosquitto.conf"
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-
 networks:
   default:
     name: greetings-network
