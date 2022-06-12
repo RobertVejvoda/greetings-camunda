@@ -4,7 +4,7 @@ Goal of this example is to try features available by Camunda workflow and Zeebe 
 
 ## The process description
 
-Expecting a sad person having difficulties learning new language and it would make her happier if someone greets him. But depending on his learning skills (Score Person Learning Curve) he desires the greeting or not. If her score is more than 30% she receives greeting by email. If less, it generates a business error and sends email to administrator. Yes, cruel world.
+Expecting a sad person having difficulties learning a new language and it would make her happier if someone greets her. But depending on her learning skills (Score Person Learning Curve) she may desire the greeting or not. If her score is more than 30% she receives greeting by email. If less, it generates a business error and sends email to administrator. Yes, cruel world.
 
 ### BPMN Workflow
 
@@ -17,8 +17,6 @@ Expecting a sad person having difficulties learning new language and it would ma
 ![DMN](decide_greeting_dmn.png)
 
 Request greeting and watch processing to the end.
-
-
 
 ## How to run
 
