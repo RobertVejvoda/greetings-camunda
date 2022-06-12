@@ -23,7 +23,8 @@ namespace greetings_camunda.Extensions
       logger.LogInformation("Zeebe Worker: {Value}", httpRequest.Headers["X-Zeebe-Worker"]);
       logger.LogInformation("Zeebe Retries: {Value}", httpRequest.Headers["X-Zeebe-Retries"]);
       logger.LogInformation("Zeebe Deadline: {Value}", httpRequest.Headers["X-Zeebe-Deadline"]);
-      logger.LogInformation("Custom header func: {Value}", httpRequest.Headers["X-Custom-Header-Func"]);
+      logger.LogInformation("Zeebe Custom ErrorCode: {Value}", httpRequest.Headers["X-Custom-ErrorCode"]);
+      logger.LogInformation("Zeebe Custom ErrorMessage: {Value}", httpRequest.Headers["X-Custom-ErrorMessage"]);
     }
 
 	}
