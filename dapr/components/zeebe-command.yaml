@@ -2,6 +2,7 @@ apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
   name: zeebe-command
+  namespace: greetings-camunda
 spec:
   type: bindings.zeebe.command
   version: v1

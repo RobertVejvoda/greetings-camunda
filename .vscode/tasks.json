@@ -7,11 +7,15 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/greetings-camunda.csproj",
+                "${workspaceFolder}/src/api/greetings-camunda.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         },
         {
             "label": "publish",
@@ -19,7 +23,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/src/greetings-camunda.csproj",
+                "${workspaceFolder}/src/api/greetings-camunda.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,9 +36,8 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/src/greetings-camunda.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "--project",
+                "${workspaceFolder}/src/api/greetings-camunda.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

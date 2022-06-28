@@ -20,5 +20,6 @@ namespace greetings_camunda.Model
         public const string FailJob = "fail-job";
         public const string UpdateJobRetries = "update-job-retries";
         public const string ThrowError = "throw-error";
+
     }
 }

@@ -26,12 +26,23 @@
     <bpmn:endEvent id="Event_01mwi7d">
       <bpmn:incoming>Flow_1mej806</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1mej806" sourceRef="Gateway_1yaimwm" targetRef="Event_01mwi7d">
+    <bpmn:sequenceFlow id="Flow_1mej806" name="Valid email?" sourceRef="Gateway_1yaimwm" targetRef="Event_01mwi7d">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=matches(email, "^[A-z0-9\.\-]+@[A-z0-9\.\-]+\.[A-z0-9]{2,5}$")</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_12l7a3s">
+      <bpmndi:BPMNEdge id="Flow_1mej806_di" bpmnElement="Flow_1mej806">
+        <di:waypoint x="580" y="145" />
+        <di:waypoint x="580" y="232" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="590" y="173" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fzofdf_di" bpmnElement="Flow_0fzofdf">
+        <di:waypoint x="605" y="120" />
+        <di:waypoint x="722" y="120" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03fedxo_di" bpmnElement="Flow_03fedxo">
         <di:waypoint x="198" y="120" />
         <di:waypoint x="340" y="120" />
@@ -40,22 +51,14 @@
         <di:waypoint x="440" y="120" />
         <di:waypoint x="555" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fzofdf_di" bpmnElement="Flow_0fzofdf">
-        <di:waypoint x="605" y="120" />
-        <di:waypoint x="722" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1mej806_di" bpmnElement="Flow_1mej806">
-        <di:waypoint x="580" y="145" />
-        <di:waypoint x="580" y="232" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="162" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19q65xz_di" bpmnElement="Activity_1tmcu9k">
-        <dc:Bounds x="340" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0bprhp5_di" bpmnElement="Event_0bprhp5">
         <dc:Bounds x="722" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19q65xz_di" bpmnElement="Activity_1tmcu9k">
+        <dc:Bounds x="340" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1yaimwm_di" bpmnElement="Gateway_1yaimwm" isMarkerVisible="true">
         <dc:Bounds x="555" y="95" width="50" height="50" />

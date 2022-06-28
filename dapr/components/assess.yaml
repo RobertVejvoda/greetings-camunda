@@ -1,7 +1,8 @@
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: decide-greeting
+  name: assess
+  namespace: greetings-camunda
 spec:
   type: bindings.zeebe.jobworker
   version: v1
@@ -13,10 +14,12 @@ spec:
   - name: usePlainTextConnection
     value: true
   - name: jobType
-    value: decide-greeting
+    value: assess
   - name: workerName
-    value: greeter-worker
+    value: assess-worker
   - name: workerTimeout
     value: 30s  # defaults to 5m
   - name: requestTimeout
     value: 10s  # defaults to 30s
+  scopes:
+    - greeter

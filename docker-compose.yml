@@ -3,7 +3,7 @@ version: "3.7"
 services:
   greetings:
     container_name: greetings
-    image: alderaan/greetings-camunda:${TAG:-latest}
+    image: ${REGISTRY:-bobonthebike}/greetings-camunda:${TAG:-latest}
     build:
       context: .
       dockerfile: src/api/Dockerfile
@@ -14,33 +14,35 @@ services:
       - "6543:80"     # app
       - "6643:3500"   # dapr http
       - "65430:50001" # dapr grpc
+      - "9999:9090"   # dapr metrics
 
   greetings-dapr:
     container_name: greetings-dapr
-    image: daprio/daprd:latest
+    image: daprio/daprd:1.7.4
     network_mode: "service:greetings"
     command: ["./daprd",
-      "-app-id", "greetings-camunda",
+      "-app-id", "greeter",
       "-app-port", "80",
       "-dapr-http-port", "3500",
       "-dapr-grpc-port", "50001",
-      "-placement-host-address", "greetings-dapr-placement:50006", 
+      "-metrics-port", "9090",
+      "-placement-host-address", "dapr-placement:50006", 
       "-components-path", "/components"
       ]
     depends_on:
       - greetings
-      - greetings-dapr-placement
     volumes:
       - "./dapr/components/:/components"
       - "./dapr/configuration/:/configuration"
 
-  greetings-dapr-placement:
-    container_name: greetings-dapr-placement
-    image: daprio/placement:latest
+  dapr-placement:
+    container_name: dapr-placement
+    image: daprio/dapr:1.7.4
     command: ["./placement", "-port", "50006"]
     ports:
       - "50006:50006"
 
 networks:
   default:
-    name: greetings-network
+    name: camunda-cloud
+    external: true

@@ -1,10 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using MQTTnet;
-using MQTTnet.Client;
-using MQTTnet.Client.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +29,6 @@ namespace sim.Proxies
 			var mqttFactory = new MqttFactory();
 			this.mqttClient = mqttFactory.CreateMqttClient();
 			this.mqttClientOptions = mqttFactory.CreateClientOptionsBuilder()
-				.WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
 				.WithTcpServer(mqttHost, int.Parse(mqttPort))
 				.WithCleanSession()
 				.Build();
@@ -47,9 +42,7 @@ namespace sim.Proxies
 
 			var message = new MqttApplicationMessageBuilder()
 				.WithTopic("camunda/greeting-requested")
-				.WithContentType("application/json")
-				.WithPayload(eventJson)
-				.WithRetainFlag(false)
+				.WithPayload(Encoding.UTF8.GetBytes(eventJson))
 				.WithAtMostOnceQoS()
 				.Build();
 

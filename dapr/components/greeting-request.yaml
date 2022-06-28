@@ -1,0 +1,18 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: greeting-request
+  namespace: greetings-camunda
+spec:
+  type: bindings.mqtt
+  version: v1
+  metadata:
+  - name: url
+    value: mqtt://host.docker.internal:1883
+  - name: topic
+    value: camunda/greeting-requested
+  - name: consumerID
+    value: "{uuid}"
+  scopes:
+    - greeter
+  

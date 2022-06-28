@@ -2,7 +2,6 @@
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using sim.Proxies;
-using System;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace sim
 {
-	public class GreetingSimulator
+    public class GreetingSimulator
 	{
         private readonly ILogger logger;
         private readonly IGreetingService service;
@@ -49,7 +48,7 @@ namespace sim
 													Email = greetingName.Email,
 													Name = greetingName.FullName
 												}, cancellationToken);
-					await Task.Delay(1000, cancellationToken);
+					await Task.Delay(250, cancellationToken);
 
 					counter++;
 				}

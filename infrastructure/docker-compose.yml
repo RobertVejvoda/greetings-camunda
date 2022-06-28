@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.9"
 
 services:
   zeebe:
@@ -71,25 +71,11 @@ services:
       - "4000:1080"
       - "4025:1025"
 
-  # zipkin:
-  #   container_name: zipkin
-  #   image: openzipkin/zipkin
-  #   ports:
-  #     - "9411:9411"
-
-  # redis:
-  #   container_name: redis
-  #   image: redis:latest
-  #   ports:
-  #     - "6379:6379"
-  #   environment:
-  #     - ALLOW_EMPTY_PASSWORD=yes
-
-  rabbitmq:
-    container_name: rabbitmq
-    image: "rabbitmq:3-management-alpine"
-    ports: 
-      - "5672:5672"
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
 
   mosquitto:
     container_name: mosquitto
@@ -109,3 +95,4 @@ volumes:
 networks:
   default:
     name: camunda-cloud
+    external: true

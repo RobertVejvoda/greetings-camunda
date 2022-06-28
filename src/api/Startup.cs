@@ -48,7 +48,7 @@ namespace greetings_camunda
             }
 
             app.UseRouting();
-            // app.UseCloudEvents();  leave it off (unsupported mediatype)!!!
+            app.UseCloudEvents(); 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

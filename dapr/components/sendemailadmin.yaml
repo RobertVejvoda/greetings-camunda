@@ -2,6 +2,7 @@ apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
   name: send-email-admin
+  namespace: greetings-camunda
 spec:
   type: bindings.zeebe.jobworker
   version: v1

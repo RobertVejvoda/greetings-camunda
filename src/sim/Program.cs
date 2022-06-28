@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using sim.Proxies;
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace sim
