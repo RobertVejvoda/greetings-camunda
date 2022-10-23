@@ -10,7 +10,7 @@ namespace sim.Proxies
     internal class MqttGreetingService : IGreetingService
 	{
 		private readonly IMqttClient mqttClient;
-		private readonly IMqttClientOptions mqttClientOptions;
+		private readonly MqttClientOptions mqttClientOptions;
 		private readonly ILogger logger;
 		private readonly JsonSerializerSettings jsonSerializerSettings;
 
@@ -43,7 +43,7 @@ namespace sim.Proxies
 			var message = new MqttApplicationMessageBuilder()
 				.WithTopic("camunda/greeting-requested")
 				.WithPayload(Encoding.UTF8.GetBytes(eventJson))
-				.WithAtMostOnceQoS()
+				.WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtMostOnce)
 				.Build();
 
 			logger.LogInformation(message.ConvertPayloadToString());
