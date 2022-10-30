@@ -18,22 +18,34 @@ Expecting a sad person having difficulties learning a new language and it would 
 
 Request greeting and watch processing to the end.
 
-## How to run
+## How to install
 
-Best experience is from Visual Studio by running docker-compose launch adding debugging options, but it's not necessary. You either have Dapr installed standalone or run as part of the solution.
+### Docker (Docker Compose)
 
-1. Install [Dapr](https://docs.dapr.io/getting-started/install-dapr-cli/)
-1. Start docker-compose in Infrastructure folder by running `docker-compose up`. I left it separate as it is the background for my other projects and also when updating and testing code I don't have to start everything. Make sure images are running.
-2. Start `docker-compose up --build` in greetings-camunda folder. This should build the project and create docker image.
-3. Navigate to [MailDev](http://localhost:4000/) to see testing emails coming
-4. Navigate to [Camunda cloud self hosted](http://localhost:8080/)
+1. Install [Dapr](https://docs.dapr.io/getting-started/install-dapr-cli/) on local machine
+2. Run start-all.ps1 in deploy/docker directory.
+
+When finished run stop-all.ps1 in deploy/docker directory.
+
+### Kubernetes
+
+1. Install [Dapr](https://docs.dapr.io/getting-started/install-dapr-cli/) to Kubernetes either with CLI or Helm charts
+2. Run start-all.ps in deploy/k8s directory.
+
+When finished run stop-all.ps1 in deploy/k8s directory.
+
+## How to test
+
+1. Navigate to [MailDev](http://localhost:4000/) to see testing emails coming
+2. Navigate to [Camunda cloud self hosted](http://localhost:8080/)
 
     user: demo\
     password: demo
 
-5. Use Camunda Modeler to see [BPMN diagram](src/api/Model/Greetings3.bpmn) and [DMN diagram](src/api/Model/greetings.dmn) and deploy both to Zeebe engine self-hosted. There is also a [playground](src/api/Model/decision-tester.bpmn) to test DMN workflows.
+3. Install and use Camunda Modeler (https://downloads.camunda.cloud/release/camunda-modeler/5.4.2/) to see [BPMN diagram](src/api/Model/Greetings3.bpmn) and [DMN diagram](src/api/Model/greetings.dmn) and deploy both to Zeebe engine self-hosted. There is also a [playground](src/api/Model/decision-tester.bpmn) to test DMN workflows.
 
-6. Ensure all containers are running. Start simulator in */src/sim* folder as `dotnet run` to process all messages or `dotnet run 10` to process just 10 messages. It's always good to start small first.
+4. Ensure all containers are running. Start simulator in */src/sim* folder as `dotnet run` to process all messages or `dotnet run 10` to process just 10 messages. It's always good to start small first.
+
 
 ## Knows issues
 
