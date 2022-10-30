@@ -1,0 +1,25 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: sendmail
+  namespace: greetings-camunda
+spec:
+  type: bindings.smtp
+  version: v1
+  metadata:
+  - name: host
+    value: mailserver
+  - name: port
+    value: 25
+  - name: user
+    secretKeyRef: 
+      name: smtp.user
+      key: smtp.user 
+  - name: password
+    secretKeyRef: 
+      name: smtp.password
+      key: smtp.password
+  - name: skipTLSVerify
+    value: true
+scopes:
+  - greetings-api

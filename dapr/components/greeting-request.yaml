@@ -14,5 +14,5 @@ spec:
   - name: consumerID
     value: "{uuid}"
   scopes:
-    - greeter
+    - greetings-api
   

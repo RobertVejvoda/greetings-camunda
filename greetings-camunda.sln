@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "greetings-camunda", "src\api\greetings-camunda.csproj", "{C5C88BBC-EE99-4282-99A3-2E6F2B105FD5}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{2C5F880F-11B4-4D71-BA1F-0897125B113A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3D3B194B-9192-4961-B539-631CDA9A9694}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{08F91B44-668C-4A94-AC24-5649787F89F1}"

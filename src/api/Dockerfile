@@ -8,16 +8,15 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:${NET_IMAGE} AS build
 WORKDIR /src
 
-COPY ["src/api/greetings-camunda.csproj", "src/api/"]
-COPY ["Nuget.config", "./"]
-RUN dotnet restore "src/api/greetings-camunda.csproj"
+COPY ["greetings-camunda.csproj", "./"]
+#COPY ["Nuget.config", "./"]
+RUN dotnet restore "./greetings-camunda.csproj"
 
 COPY . .
-WORKDIR "/src/src/api"
-# RUN dotnet build "greetings-camunda.csproj" -c Release -o /app/build
+RUN dotnet build "./greetings-camunda.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish --no-restore "greetings-camunda.csproj" -c Release -o /app/publish
+RUN dotnet publish --no-restore "./greetings-camunda.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

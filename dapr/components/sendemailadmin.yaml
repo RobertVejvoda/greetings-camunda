@@ -21,3 +21,5 @@ spec:
     value: 30s  # defaults to 5m
   - name: requestTimeout
     value: 10s  # defaults to 30s
+scopes:
+  - greetings-api

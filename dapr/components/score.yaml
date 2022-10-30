@@ -22,4 +22,4 @@ spec:
   - name: requestTimeout
     value: 10s  # defaults to 30s
   scopes:
-    - greeter
+    - greetings-api

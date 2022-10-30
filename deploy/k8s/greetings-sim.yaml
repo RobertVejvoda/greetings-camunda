@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greetings-sim
+  namespace: greetings-camunda
+  labels:
+    app: greetings-sim
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: greetings-sim
+  template:
+    metadata:
+      labels:
+        app: greetings-sim
+    spec:
+      containers:
+      - name: greetings-sim
+        image: greetings-sim:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: MQTT_HOST
+            value: mosquitto.greetings-camunda.svc.cluster.local

@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   zeebe:
-    image: camunda/zeebe:latest
+    image: camunda/zeebe
     container_name: zeebe
     environment:
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
@@ -17,7 +17,7 @@ services:
       - elasticsearch
 
   operate:
-    image: camunda/operate:latest
+    image: camunda/operate
     container_name: operate
     environment:
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
@@ -25,14 +25,14 @@ services:
       - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "8080:8080"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
+    # volumes:
+    #   - /etc/timezone:/etc/timezone:ro
+    #   - /etc/localtime:/etc/localtime:ro
     depends_on:
       - elasticsearch
 
   tasklist:
-    image: camunda/tasklist:latest
+    image: camunda/tasklist
     container_name: tasklist
     environment:
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
@@ -40,9 +40,9 @@ services:
       - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "8081:8080"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
+    # volumes:
+    #   - /etc/timezone:/etc/timezone:ro
+    #   - /etc/localtime:/etc/localtime:ro
     depends_on:
       - elasticsearch
 
@@ -66,7 +66,7 @@ services:
 
   maildev:
     container_name: maildev
-    image: maildev/maildev:latest
+    image: maildev/maildev
     ports:
       - "4000:1080"
       - "4025:1025"
@@ -79,9 +79,7 @@ services:
 
   mosquitto:
     container_name: mosquitto
-    image: eclipse-mosquitto:latest
-    volumes:
-      - "../dapr/configuration/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+    image: greetings-camunda/mosquitto:1.0.0
     ports:
       - "1883:1883"
       - "9001:9001"

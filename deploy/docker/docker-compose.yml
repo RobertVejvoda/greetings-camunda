@@ -1,27 +1,29 @@
-version: "3.7"
+version: "3.9"
 
 services:
-  greetings:
-    container_name: greetings
-    image: ${REGISTRY:-bobonthebike}/greetings-camunda:${TAG:-latest}
+  greetings-api:
+    container_name: greetings-api
+    image: ${REGISTRY:-greetings-camunda}/greetings-api:${TAG:-latest}
     build:
-      context: .
-      dockerfile: src/api/Dockerfile
+      context: ../../src/api
+      dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - MQTT_HOST=${MQTT_HOST:-localhost}
+      - MQTT_PORT=${MQTT_PORT:-1883}
     ports:
       - "6543:80"     # app
       - "6643:3500"   # dapr http
       - "65430:50001" # dapr grpc
       - "9999:9090"   # dapr metrics
 
-  greetings-dapr:
-    container_name: greetings-dapr
-    image: daprio/daprd:1.7.4
-    network_mode: "service:greetings"
+  greetings-api-dapr:
+    container_name: greetings-api-dapr
+    image: daprio/daprd:1.9.0
+    network_mode: "service:greetings-api"
     command: ["./daprd",
-      "-app-id", "greeter",
+      "-app-id", "greetings-api",
       "-app-port", "80",
       "-dapr-http-port", "3500",
       "-dapr-grpc-port", "50001",
@@ -30,14 +32,14 @@ services:
       "-components-path", "/components"
       ]
     depends_on:
-      - greetings
+      - greetings-api
     volumes:
-      - "./dapr/components/:/components"
-      - "./dapr/configuration/:/configuration"
-
+      - "../../dapr/components/:/components"
+      - "../../dapr/configuration/:/configuration"
+  
   dapr-placement:
     container_name: dapr-placement
-    image: daprio/dapr:1.7.4
+    image: daprio/dapr:1.9.0
     command: ["./placement", "-port", "50006"]
     ports:
       - "50006:50006"

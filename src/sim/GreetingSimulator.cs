@@ -30,13 +30,12 @@ namespace sim
 				Delimiter = ";"
 			};
 
-			var random = new Random();
-			
 			try
 			{
 				var counter = 0;
 				using var reader = new StreamReader("names.csv");
 				using var csv = new CsvReader(reader, config);
+				
 				await foreach (var greetingName in csv.GetRecordsAsync<GreetingName>(cancellationToken))
 				{
 					if (counter >= processRecords && processRecords != -1)
@@ -50,18 +49,25 @@ namespace sim
 												}, cancellationToken);
 					await Task.Delay(250, cancellationToken);
 
+					if (cancellationToken.IsCancellationRequested)
+					{
+						logger.LogInformation("Greeter simulation cancellation requested");
+						cancellationToken.ThrowIfCancellationRequested();
+					}
 					counter++;
 				}
 			}
 			catch (Exception ex)
 			{
 				logger.LogError(ex.ToString());
-				if (ex is TaskCanceledException)
-					throw;
+				
+				if (ex is OperationCanceledException)
+					logger.LogInformation($"Greeter simulation cancelled.");
+
+				throw;
 			}
 
 			logger.LogInformation($"Greeter simulation finished.");
-
 		}
 	}
 }

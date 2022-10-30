@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greetings-api
+  namespace: greetings-camunda
+  labels:
+    app: greetings-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: greetings-api
+  template:
+    metadata:
+      labels:
+        app: greetings-api
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "greetings-api"
+        dapr.io/app-port: "6543"
+        dapr.io/config: "dapr-config"
+    spec:
+      containers:
+      - name: greetings-api
+        image: greetings-api:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80

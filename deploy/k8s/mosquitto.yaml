@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mosquitto
+    version: v1
+  name: mosquitto
+  namespace: greetings-camunda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+        - name: mosquitto
+          image: mosquitto:latest
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 1883
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mosquitto
+  name: mosquitto
+  namespace: greetings-camunda
+spec:
+  ports:
+  - name: "mqtt"
+    port: 1883
+    targetPort: 1883
+  selector:
+    app: mosquitto

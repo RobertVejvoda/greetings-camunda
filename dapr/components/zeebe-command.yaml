@@ -13,3 +13,5 @@ spec:
     value: 45s
   - name: usePlainTextConnection
     value: true
+scopes:
+  - greetings-api
